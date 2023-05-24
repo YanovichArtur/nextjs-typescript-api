@@ -3,32 +3,10 @@ import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { dehydrate, QueryClient } from '@tanstack/react-query'
 import { PageHeader, CurrencyListCard, Error, Loading } from "@/components";
-import { fetchCurrencies, useCurrencies, queryKeys } from "@/hooks/useCurrencies";
-
-type CurrencyItem = {
-  id: string;
-  high_24h: number;
-  low_24h: number;
-  image: string;
-  current_price: number;
-  name: string;
-}
+import { fetchCurrencies, useCurrencies, queryKeys, CurrencyItem } from "@/hooks/useCurrencies";
 
 const Home: NextPage = () => {
   const { data, isLoading, error } = useCurrencies();
-  const [cards, setCards] = useState<Array<CurrencyItem>>([]);
-
-  useEffect(() => {
-    if (data) {
-      const resultCardsArray = [...cards, ...data].reduce((result, item) => {
-        if (result.findIndex((resultItem: CurrencyItem) => { return resultItem.id === item.id }) === -1) {
-          result.push(item);
-        }
-        return result;
-      }, []);
-      setCards(resultCardsArray);
-    }
-  }, [data]);
 
   return (
     <>
@@ -43,7 +21,7 @@ const Home: NextPage = () => {
             {error ? <Error message="An error occurred while getting the list of currencies"/> : null}
             {data ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {cards.map((card) => (
+                {Array.isArray(data) ? data.map((card: CurrencyItem) => (
                   <CurrencyListCard
                     key={card.id}
                     image={card.image}
@@ -53,7 +31,7 @@ const Home: NextPage = () => {
                     low24h={card.low_24h}
                     id={card.id}
                   />
-                ))}
+                )) : null}
               </div>
             ) : null}
           </div>

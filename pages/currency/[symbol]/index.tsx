@@ -29,7 +29,6 @@ const CurrencyInformation: React.FC = () => {
               {error ? <Error message="An error occurred while getting information about currency" /> : null}
               {data ? (
                 <CurrencyInfoCard
-                  image={data?.image.large}
                   currencyName={data.name}
                   currentPrice={data.market_data.current_price.bmd}
                   ath={data.market_data.ath.bmd}
